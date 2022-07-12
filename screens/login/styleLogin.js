@@ -62,7 +62,7 @@ export default StyleSheet.create({
         backgroundColor: '#2B0548',
         paddingVertical: 10,
         borderRadius: 8,
-        marginTop: 10,
+        marginTop: 20,
       },
       loginButtonText: {
         color: '#fff',
@@ -71,8 +71,9 @@ export default StyleSheet.create({
       },
       registerText: {
         alignSelf: 'center',
-        marginTop: 12,
+        marginTop: 15,
         fontSize: 16,
+        marginBottom: 50
       },
       fpText: {
         marginTop: 10,
@@ -80,4 +81,27 @@ export default StyleSheet.create({
         fontSize: 16,
         color: '#2B0548',
       },
+      
+      EntrarGoogle:{
+        width: '40%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginLeft: '30%',
+        borderColor: 'black',
+        borderWidth: 1,
+        borderRadius: 10,
+        marginBottom: 10,
+        marginTop: 10
+      },
+
+      buttonGoogle:{
+        width: '45%',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        flexDirection: 'row',
+        borderRadius: 5,
+        padding: 5,
+      }
 });

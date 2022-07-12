@@ -6,9 +6,7 @@ import NavigationScreenStack from './navigation/stack';
 
 export default function App() {
   return (
-    
     <NavigationScreenStack/>
-
   );
 }
 

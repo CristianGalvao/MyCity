@@ -8,10 +8,13 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Dimensions,
+  Button,
   Keyboard,
 } from 'react-native';
 
 import styles from './styleLogin';
+
+import logoGoogle from '../../assets/login/google.jpg'
 
 // You can use your custom background image
 import BackgroundImage from '../../assets/login/fundoLogin.jpg';
@@ -32,11 +35,11 @@ export default function LoginScreen4() {
       <View style={styles.container}>
         <View style={{ flex: 1 }}>
           <Image
-            style={{ flex: 1, width: null, marginTop: -300 ,resizeMode: 'contain' }}
+            style={{ flex: 1, width: null, marginTop: -300, resizeMode: 'contain' }}
             source={BackgroundImage}
           />
         </View>
-      
+
         <View style={styles.bottomView}>
           <Text style={styles.loginText}>Entrar</Text>
           <View style={styles.inputView}>
@@ -79,6 +82,18 @@ export default function LoginScreen4() {
             </Text>
           </Text>
         </View>
+
+        <View style={styles.EntrarGoogle}>
+
+          <TouchableOpacity style={styles.buttonGoogle}>
+
+            <Image source={logoGoogle} style={{width: 36, height: 36}}/>
+            <Text>Google</Text>
+
+          </TouchableOpacity>
+
+        </View>
+
       </View>
     </TouchableWithoutFeedback>
   );
