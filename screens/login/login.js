@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -14,6 +14,12 @@ import {
 
 import styles from './styleLogin';
 
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+
+
+import firebase from '../../src/config/firebase';
+
 import logoGoogle from '../../assets/login/google.jpg'
 
 // You can use your custom background image
@@ -21,9 +27,47 @@ import BackgroundImage from '../../assets/login/fundoLogin.jpg';
 
 import { useFonts } from 'expo-font';
 
+
 import { Icon } from 'react-native-elements';
 
-export default function LoginScreen4() {
+export default function Login({ navigation }) {
+
+  useEffect(() => {
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        navigation.navigate("home", { idUser: user.uid })
+        // ...
+      } else {
+        // User is signed out
+        // ...
+      }
+    });
+  }, []);
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorLogin, setErrorLogin] = useState("")
+
+
+
+  const loginFirebase = () => {
+    firebase.auth().signInWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        // Signed in
+        var user = userCredential.user;
+        console.log(user)
+        navigation.navigate("home", { idUser: user.uid })
+        // ...
+      })
+      .catch((error) => {
+        setErrorLogin(true)
+        console.log("erro")
+        var errorCode = error.code;
+        var errorMessage = error.message;
+      });
+  }
+
   const [loaded] = useFonts({});
 
   if (!loaded || !BackgroundImage) {
@@ -55,6 +99,9 @@ export default function LoginScreen4() {
               autoCapitalize='none'
               keyboardType='email-address'
               textContentType='emailAddress'
+              onChangeText={setEmail}
+
+
             />
           </View>
           <View style={styles.inputView}>
@@ -69,15 +116,18 @@ export default function LoginScreen4() {
               placeholder='Senha'
               secureTextEntry={true}
               autoCapitalize='none'
+              onChangeText={setPassword}
+
             />
           </View>
           <Text style={styles.fpText}>Esqueceu a senha?</Text>
-          <TouchableOpacity style={styles.loginButton}>
+          <TouchableOpacity style={styles.loginButton} onPress={loginFirebase}>
             <Text style={styles.loginButtonText}>Entrar</Text>
           </TouchableOpacity>
+          <Button title='Teste'></Button>
           <Text style={styles.registerText}>
             Não tem uma conta?
-            <Text style={{ color: '#2B0548' }}>
+            <Text onPress={() => navigation.navigate("registerUser")} style={{ color: '#2B0548' }}>
               {' Cadastre-se'}
             </Text>
           </Text>
@@ -87,7 +137,7 @@ export default function LoginScreen4() {
 
           <TouchableOpacity style={styles.buttonGoogle}>
 
-            <Image source={logoGoogle} style={{width: 36, height: 36}}/>
+            <Image source={logoGoogle} style={{ width: 36, height: 36 }} />
             <Text>Google</Text>
 
           </TouchableOpacity>
