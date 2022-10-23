@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "755994611357",
+    "project_id": "mycityjandira",
+    "storage_bucket": "mycityjandira.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:755994611357:android:b3ada9a89bd4708f2e0e74",
+        "android_client_info": {
+          "package_name": "com.mycityjandira"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "755994611357-4g3o6g2ck5nd8iqkhca4qovof5ahgqu9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mycityjandira",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "755994611357-b6a9l2iqjph0ospce8citp6mk5mecqid.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdWWyrk7h5QvLszpv1VjUaMcM4nLZqp6Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "755994611357-b6a9l2iqjph0ospce8citp6mk5mecqid.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
