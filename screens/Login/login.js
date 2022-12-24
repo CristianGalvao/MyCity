@@ -12,11 +12,12 @@ import {
     Keyboard,
 } from 'react-native';
 
-import LogoImg from '../../assets/login/logoMyCity.png';
-
 // IMPORTAÇÕES DE LOGIN GOOGLE
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
+
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+
 
 import styles from './styleLogin';
 
@@ -26,7 +27,6 @@ import logoGoogle from '../../assets/login/google.jpg';
 import BackgroundImage from '../../assets/login/loginImg.png';
 
 import { useFonts } from 'expo-font';
-
 import { Icon } from 'react-native-elements';
 
 export default function Login({ navigation }) {
@@ -51,13 +51,28 @@ export default function Login({ navigation }) {
         const { idToken } = await GoogleSignin.signIn();
         const userInfo = await GoogleSignin.signIn();
         console.log(userInfo.user.email)
-        navigation.navigate('home', {userData: userInfo})
+        navigation.navigate('home', { userData: userInfo })
         // Create a Google credential with the token
         const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-    
+
         // Sign-in the user with the credential
         return auth().signInWithCredential(googleCredential);
-      }
+    }
+
+    function loginUser() {
+        const auth = getAuth();
+        signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                // Signed in 
+                const user = userCredential.user;
+                console.log(user)
+                // ...
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+            });
+    }
 
     return (
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -106,7 +121,7 @@ export default function Login({ navigation }) {
                         />
                     </View>
                     <Text style={styles.fpText}>Esqueceu a senha?</Text>
-                    <TouchableOpacity style={styles.loginButton}>
+                    <TouchableOpacity onPress={()=>loginUser()} style={styles.loginButton}>
                         <Text style={styles.loginButtonText}>Entrar</Text>
                     </TouchableOpacity>
                     <Text style={styles.registerText}>
@@ -120,7 +135,7 @@ export default function Login({ navigation }) {
                 <View style={styles.EntrarGoogle}>
 
                     <TouchableOpacity style={styles.buttonGoogle} onPress={() => onGoogleButtonPress().then(() => console.log('Signed in with Google!'))}
->
+                    >
 
                         <Image source={logoGoogle} style={{ width: 36, height: 36 }} />
                         <Text>Google</Text>

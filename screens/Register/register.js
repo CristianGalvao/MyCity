@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { View, Text, ScrollView, TextInput, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from "react";
+import { View, Text, ScrollView, TextInput, TouchableOpacity, Alert } from 'react-native';
 
 // IMPORTANDO OS ESTILOS
 import styleRegister from "./styleRegister";
@@ -11,13 +11,14 @@ import styles from '../Login/styleLogin';
 import { Icon } from 'react-native-elements';
 
 // IMPORTANDO O CONTROLLER PARA ALTERAR OS CAMPOS 
-import { Controller, set, useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 
 // IMPORTANDO MASCARA DOS CAMPOS
 import { MaskedTextInput } from "react-native-mask-text";
 
 // IMPORTANDO OS ICONES
 import { FontAwesome, FontAwesome5, MaterialCommunityIcons, MaterialIcons, Ionicons } from '@expo/vector-icons';
+
 
 export default function Register() {
 
@@ -27,7 +28,16 @@ export default function Register() {
     const [password, setPassword] = useState(' ');
     const [hidePassword, setHidePassword] = useState(null);
     const [hidePassword2, setHidePassword2] = useState(null);
-    const [confirmPassword, setConfirmPassword]  = useState(' ')
+    const [confirmPassword, setConfirmPassword] = useState(' ');
+    const [nameUser, setNameUser] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [address, setAddress] = useState('');
+    const [number, setNumber] = useState('');
+    const [complement, setComplement] = useState('');
+    const [email, setEmail] = useState('');
+
+    const ip = "192.168.100.19"
+
 
     // FUNÇÃO PARA VALIDAR CPF
     function isValidCPF(cpf) {
@@ -40,6 +50,37 @@ export default function Register() {
             .reduce((soma, el, index) => (soma + el * (count - index)), 0) * 10) % 11 % 10
         return rest(10) === cpf[9] && rest(11) === cpf[10]
     }
+
+    async function createUser() {
+
+           if(!isValidCPF(cpf) || password != confirmPassword || password == ''){
+            Alert.alert("Erro ao cadastrar!", "Verifique os campos em vermelho")
+           }else{
+
+            await fetch(`http://${ip}:3000/createUser`, {
+                method: 'POST',
+                headers: {
+                  Accept: 'application/json',
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    first_name: nameUser,
+                    last_name: lastName,
+                    cpf: cpf,
+                    cep: cep,
+                    address: address,
+                    number_house: number,
+                    complement: complement,
+                    tutorial: "true",
+                    email: email,
+                    password_user: password
+                }),
+              });
+
+           }
+
+    };
+
 
     const { handleSubmit, control, errors } = useForm();
 
@@ -55,250 +96,249 @@ export default function Register() {
 
             </View>
 
-                <ScrollView>
+            <ScrollView>
 
-            <View style={{ width: '90%', marginTop: 20, marginLeft: '5%' }}>
+                <View style={{ width: '90%', marginTop: 20, marginLeft: '5%' }}>
 
-                {/* CAMPO NOME */}
-                <View style={styles.inputView}>
-                    <Icon
-                        style={styles.inputIcon}
-                        name='person'
-                        type='ionicons'
-                        color='blue'
-                    />
-                    <TextInput
-                        style={styles.input}
-                        placeholder='Nome'
-                        autoCapitalize='none'
-                        keyboardType='email-address'
-                        textContentType='emailAddress'
-                    // onChangeText={setEmail}
-                    />
-                </View>
+                    {/* CAMPO NOME */}
+                    <View style={styles.inputView}>
+                        <Icon
+                            style={styles.inputIcon}
+                            name='person'
+                            type='ionicons'
+                            color='blue'
+                        />
+                        <TextInput
+                            style={styles.input}
+                            placeholder='Nome'
+                            autoCapitalize='none'
+                            onChangeText={setNameUser}
+                        />
+                    </View>
 
 
-                {/* CAMPO SOBRENOME */}
-                <View style={styles.inputView}>
-                    <Icon
-                        style={styles.inputIcon}
-                        name='person'
-                        type='ionicons'
-                        color='blue'
-                    />
-                    <TextInput
-                        style={styles.input}
-                        placeholder='Sobrenome'
-                        autoCapitalize='none'
-                        keyboardType="default"
-                    // onChangeText={setEmail}
-                    />
-                </View>
+                    {/* CAMPO SOBRENOME */}
+                    <View style={styles.inputView}>
+                        <Icon
+                            style={styles.inputIcon}
+                            name='person'
+                            type='ionicons'
+                            color='blue'
+                        />
+                        <TextInput
+                            style={styles.input}
+                            placeholder='Sobrenome'
+                            autoCapitalize='none'
+                            keyboardType="default"
+                            onChangeText={setLastName}
+                        />
+                    </View>
 
-                {/* CAMPO CPF */}
-                <View style={styles.inputView}>
-                    <Controller
-                        control={control}
-                        rules={{
-                            maxLength: 14,
-                            required: false,
+                    {/* CAMPO CPF */}
+                    <View style={styles.inputView}>
+                        <Controller
+                            control={control}
+                            rules={{
+                                maxLength: 14,
+                                required: false,
 
-                        }}
-                        render={({ field: { onChange, onBlur, value } }) =>
-                            <><FontAwesome name="address-card-o" color="blue" style={{ paddingHorizontal: 11, fontSize: 20 }} />
-                                <MaskedTextInput
-                                    style={styles.input}
-                                    // onBlur={onBlur}
-                                    onChangeText={text => setCpf(text)}
-                                    keyboardType="numeric"
-                                    mask="999.999.999-99"
-                                    // value={value}
+                            }}
+                            render={({ field: { onChange, onBlur, value } }) =>
+                                <><FontAwesome name="address-card-o" color="blue" style={{ paddingHorizontal: 11, fontSize: 20 }} />
+                                    <MaskedTextInput
+                                        style={styles.input}
+                                        // onBlur={onBlur}
+                                        onChangeText={text => setCpf(text)}
+                                        keyboardType="numeric"
+                                        mask="999.999.999-99"
+                                        // value={value}
 
-                                    placeholder={"CPF"} /></>}
-                        name="cpf"
-                    />
+                                        placeholder={"CPF"} /></>}
+                            name="cpf"
+                        />
 
-                </View>
+                    </View>
 
-                {!isValidCPF(cpf) && cpf.length > 0 ? <Text style={{ color: 'red', textAlign: 'left', marginLeft: '5%', marginTop: '3%' }}>CPF inválido</Text> : null}
-
-
-                {/* CAMPO CEP */}
-                <View style={styles.inputView}>
-                    <Controller
-                        control={control}
-                        rules={{
-                            maxLength: 14,
-                            required: false,
-
-                        }}
-                        render={({ field: { onChange, onBlur, value } }) =>
-                            <><FontAwesome name="sort-alpha-desc" color="blue" style={{ paddingHorizontal: 11, fontSize: 20 }} />
-                                <MaskedTextInput
-                                    style={styles.input}
-                                    // onBlur={onBlur}
-                                    onChangeText={text => setCEP(text)}
-                                    keyboardType="numeric"
-                                    mask="99999-999"
-                                    // value={value}
-
-                                    placeholder={"CEP"} /></>}
-                        name="cpf"
-                    />
-
-                </View>
-
-                {/* CAMPO ENDEREÇO */}
-                <View style={styles.inputView}>
-                    <FontAwesome
-                        style={styles.inputIcon}
-                        name='binoculars'
-                        type='ionicons'
-                        color='blue'
-                    />
-                    <TextInput
-                        style={styles.input}
-                        placeholder='Endereço'
-                        autoCapitalize='none'
-                        keyboardType="default"
-                    // onChangeText={setEmail}
-                    />
-                </View>
-
-                {/* CAMPO NUMERO */}
-                <View style={styles.inputView}>
-                    <Icon
-                        style={styles.inputIcon}
-                        name='home'
-                        type='ionicons'
-                        color='blue'
-                    />
-                    <TextInput
-                        style={styles.input}
-                        placeholder='Numero'
-                        autoCapitalize='none'
-                        keyboardType="default"
-                    // onChangeText={setEmail}
-                    />
-                </View>
-
-                {/* CAMPO COMPLEMENTO */}
-                <View style={styles.inputView}>
-                    <Icon
-                        style={styles.inputIcon}
-                        name='person'
-                        type='ionicons'
-                        color='blue'
-                    />
-                    <TextInput
-                        style={styles.input}
-                        placeholder='Complemento'
-                        autoCapitalize='none'
-                        keyboardType="default"
-                    // onChangeText={setEmail}
-                    />
-                </View>
+                    {!isValidCPF(cpf) && cpf.length > 0 ? <Text style={{ color: 'red', textAlign: 'left', marginLeft: '5%', marginTop: '3%' }}>CPF inválido</Text> : null}
 
 
-                {/* CAMPO E-MAIL */}
-                <View style={styles.inputView}>
-                    <Icon
-                        style={styles.inputIcon}
-                        name='email'
-                        type='ionicons'
-                        color='blue'
-                    />
-                    <TextInput
-                        style={styles.input}
-                        placeholder='E-mail'
-                        autoCapitalize='none'
-                        keyboardType='email-address'
-                        textContentType='emailAddress'
-                    // onChangeText={setEmail}
-                    />
+                    {/* CAMPO CEP */}
+                    <View style={styles.inputView}>
+                        <Controller
+                            control={control}
+                            rules={{
+                                maxLength: 14,
+                                required: false,
 
-               
-                </View>
+                            }}
+                            render={({ field: { onChange, onBlur, value } }) =>
+                                <><FontAwesome name="sort-alpha-desc" color="blue" style={{ paddingHorizontal: 11, fontSize: 20 }} />
+                                    <MaskedTextInput
+                                        style={styles.input}
+                                        // onBlur={onBlur}
+                                        onChangeText={text => setCEP(text)}
+                                        keyboardType="numeric"
+                                        mask="99999-999"
+                                        // value={value}
 
-                     {/* CAMPO SENHA */}
+                                        placeholder={"CEP"} /></>}
+                            name="cpf"
+                        />
 
-                <View style={styles.inputView}>
-                    <Controller
-                        control={control}
-                        rules={{
-                            maxLength: 15,
-                            minLength: 6,
-                            required: true
-                        }}
-                        render={({ field: { onChange, onBlur, value } }) =>
-                            <><FontAwesome name="lock" style={{ paddingHorizontal: 11, fontSize: 25 }}  color="blue" />
-                                <TextInput
-                                    style={styles.input}
-                                    onBlur={onBlur}
-                                    onChangeText={setPassword}
-                                    // value={value}
-                                    textContentType="password"
-                                    secureTextEntry={hidePassword}
-                                    placeholder={"Senha"} /></>}
-                        name="senha"
-                    />
+                    </View>
+
+                    {/* CAMPO ENDEREÇO */}
+                    <View style={styles.inputView}>
+                        <FontAwesome
+                            style={styles.inputIcon}
+                            name='binoculars'
+                            type='ionicons'
+                            color='blue'
+                        />
+                        <TextInput
+                            style={styles.input}
+                            placeholder='Endereço'
+                            autoCapitalize='none'
+                            keyboardType="default"
+                            onChangeText={setAddress}
+                        />
+                    </View>
+
+                    {/* CAMPO NUMERO */}
+                    <View style={styles.inputView}>
+                        <Icon
+                            style={styles.inputIcon}
+                            name='home'
+                            type='ionicons'
+                            color='blue'
+                        />
+                        <TextInput
+                            style={styles.input}
+                            placeholder='Numero'
+                            autoCapitalize='none'
+                            keyboardType="default"
+                            onChangeText={setNumber}
+                        />
+                    </View>
+
+                    {/* CAMPO COMPLEMENTO */}
+                    <View style={styles.inputView}>
+                        <Icon
+                            style={styles.inputIcon}
+                            name='person'
+                            type='ionicons'
+                            color='blue'
+                        />
+                        <TextInput
+                            style={styles.input}
+                            placeholder='Complemento'
+                            autoCapitalize='none'
+                            keyboardType="default"
+                            onChangeText={setComplement}
+                        />
+                    </View>
 
 
+                    {/* CAMPO E-MAIL */}
+                    <View style={styles.inputView}>
+                        <Icon
+                            style={styles.inputIcon}
+                            name='email'
+                            type='ionicons'
+                            color='blue'
+                        />
+                        <TextInput
+                            style={styles.input}
+                            placeholder='E-mail'
+                            autoCapitalize='none'
+                            keyboardType='email-address'
+                            textContentType='emailAddress'
+                            onChangeText={setEmail}
+                        />
 
-                    <TouchableOpacity
-                        style={styles.icon}
-                        onPress={() => setHidePassword(!hidePassword)}
-                    >
-                        {hidePassword
-                            ? <Ionicons name="eye" color="#0445ba" size={17} style={{ paddingHorizontal: 11, fontSize: 20 }} />
-                            : <Ionicons name="eye-off" color="#0445ba" size={17} style={{ paddingHorizontal: 11, fontSize: 20 }}  />}
-                    </TouchableOpacity>
-            
-                </View>
 
-                   
+                    </View>
+
+                    {/* CAMPO SENHA */}
+
+                    <View style={styles.inputView}>
+                        <Controller
+                            control={control}
+                            rules={{
+                                maxLength: 15,
+                                minLength: 6,
+                                required: true
+                            }}
+                            render={({ field: { onChange, onBlur, value } }) =>
+                                <><FontAwesome name="lock" style={{ paddingHorizontal: 11, fontSize: 25 }} color="blue" />
+                                    <TextInput
+                                        style={styles.input}
+                                        onBlur={onBlur}
+                                        onChangeText={setPassword}
+                                        // value={value}
+                                        textContentType="password"
+                                        secureTextEntry={!hidePassword}
+                                        placeholder={"Senha"} /></>}
+                            name="senha"
+                        />
+
+
+                        <TouchableOpacity
+                            style={styles.icon}
+                            onPress={() => setHidePassword(!hidePassword)}
+                        >
+                            {hidePassword
+                                ? <Ionicons name="eye" color="#0445ba" size={17} style={{ paddingHorizontal: 11, fontSize: 20 }} />
+                                : <Ionicons name="eye-off" color="#0445ba" size={17} style={{ paddingHorizontal: 11, fontSize: 20 }} />}
+                        </TouchableOpacity>
+
+                    </View>
+
+
                     {/* CONFIRMAR SENHA */}
                     <View style={styles.inputView}>
-                    <Controller
-                        control={control}
-                        rules={{
-                            maxLength: 15,
-                            minLength: 6,
-                            required: true
-                        }}
-                        render={({ field: { onChange, onBlur, value } }) =>
-                            <><FontAwesome name="lock" style={{ paddingHorizontal: 11, fontSize: 25 }}  color="blue" />
-                                <TextInput
-                                    style={styles.input}
-                                    onBlur={onBlur}
-                                    onChangeText={setConfirmPassword}
-                                    // value={value}
-                                    textContentType="password"
-                                    secureTextEntry={hidePassword2}
-                                    placeholder={"Confirmar Senha"} /></>}
-                        name="senha"
-                    />
+                        <Controller
+                            control={control}
+                            rules={{
+                                maxLength: 15,
+                                minLength: 6,
+                                required: true
+                            }}
+                            render={({ field: { onChange, onBlur, value } }) =>
+                                <><FontAwesome name="lock" style={{ paddingHorizontal: 11, fontSize: 25 }} color="blue" />
+                                    <TextInput
+                                        style={styles.input}
+                                        onBlur={onBlur}
+                                        onChangeText={setConfirmPassword}
+                                        // value={value}
+                                        textContentType="password"
+                                        secureTextEntry={!hidePassword2}
+                                        placeholder={"Confirmar Senha"} /></>}
+                            name="senha"
+                        />
 
 
 
-                    <TouchableOpacity
-                        style={styles.icon}
-                        onPress={() => setHidePassword2(!hidePassword2)}
-                    >
-                        {hidePassword2
-                            ? <Ionicons name="eye" color="#0445ba" size={17} style={{ paddingHorizontal: 11, fontSize: 20 }} />
-                            : <Ionicons name="eye-off" color="#0445ba" size={17} style={{ paddingHorizontal: 11, fontSize: 20 }}  />}
+                        <TouchableOpacity
+                            style={styles.icon}
+                            onPress={() => setHidePassword2(!hidePassword2)}
+                        >
+                            {hidePassword2
+                                ? <Ionicons name="eye" color="#0445ba" size={17} style={{ paddingHorizontal: 11, fontSize: 20 }} />
+                                : <Ionicons name="eye-off" color="#0445ba" size={17} style={{ paddingHorizontal: 11, fontSize: 20 }} />}
+                        </TouchableOpacity>
+
+                    </View>
+
+                    {password != confirmPassword ? <Text style={{color: "red"}}>Senha não coincidem</Text> : <Text></Text>}
+
+                    <TouchableOpacity onPress={() => { createUser()}} style={styleRegister.btnCadastrar}>
+
+                        <Text style={styleRegister.txtCadastrar}>Cadastrar</Text>
+
                     </TouchableOpacity>
-            
+
                 </View>
-
-                <TouchableOpacity style={styleRegister.btnCadastrar}>
-
-                    <Text style={styleRegister.txtCadastrar}>Cadastrar</Text>
-
-                </TouchableOpacity>
-
-            </View>
 
             </ScrollView>
 
